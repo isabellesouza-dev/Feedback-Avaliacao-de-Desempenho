@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devolutiva de Desempenho | Desenvolvimento Humano Organizacional</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#eef4fb;color:#1a1a2e;padding:24px;font-size:14px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:20px;font-weight:800;color:#0c457e;margin-bottom:2px}
+.sub{font-size:12px;color:#5a7a9b;margin-bottom:20px}
+.card{background:#fff;border-radius:16px;padding:20px 22px;margin-bottom:16px;border:2px solid #dde9f7}
+.card h3{font-size:13px;font-weight:700;margin-bottom:16px;color:#0c457e;border-bottom:2px solid #0c457e;padding-bottom:8px}
+label{font-size:11px;font-weight:700;color:#5a7a9b;display:block;margin-bottom:4px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.fg .full{grid-column:1/-1}
+input,select,textarea{width:100%;padding:8px 12px;border:2px solid #c7dcf3;border-radius:10px;font-size:12px;background:#fff;font-family:'Nunito',sans-serif;font-weight:600;color:#0c457e}
+textarea{resize:vertical}
+.section-label{font-size:11px;font-weight:700;color:#5a7a9b;margin-bottom:8px}
+.pilares{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.pilar{text-align:center;padding:10px 4px;border-radius:10px;cursor:pointer;font-size:11px;font-weight:700;border:2px solid #dde9f7;color:#5a7a9b}
+.pilar.active{border-color:#0c457e;background:#eaf2fb;color:#0c457e}
+.btn-s{padding:10px 20px;border:none;border-radius:10px;font-size:13px;cursor:pointer;font-weight:800;color:#fff;font-family:'Nunito',sans-serif;letter-spacing:.03em;background:#0c457e}
+.btn-s:hover{opacity:.9}
+.btn-s:disabled{opacity:.5;cursor:default}
+.btn-clr{padding:8px 14px;border:2px solid #c7dcf3;border-radius:8px;font-size:12px;background:#fff;cursor:pointer;color:#5a7a9b;font-family:'Nunito',sans-serif;font-weight:700;margin-right:6px;margin-top:8px}
+.btn-clr:hover{background:#f3f8fd;color:#0c457e}
+.erro{color:#a32d2d;font-size:12px;margin-top:10px;display:none}
+.badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;margin-right:6px;display:inline-block}
+.badge-pilar{color:#0c457e;background:#eaf2fb}
+.badge-class{color:#5a7a9b;background:#eef4fb}
+.out-label{font-size:11px;font-weight:700;margin-bottom:4px}
+.out-text{font-size:13px;line-height:1.6;margin-bottom:14px}
+.hist-item{border:2px solid #dde9f7;border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.hist-nome{font-size:13px;font-weight:700;color:#0c457e}
+.hist-meta{font-size:11px;color:#5a7a9b;margin-bottom:8px}
+.empty{text-align:center;padding:20px;color:#a9b8cc;font-size:13px}
+@media (max-width:480px){.fg{grid-template-columns:1fr}.pilares{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Devolutiva de desempenho</h1>
+  <p class="sub">Desenvolvimento Humano Organizacional</p>
+
+  <div class="card">
+    <h3>1. Pilar relacionado</h3>
+    <div class="pilares" id="pilares"></div>
+
+    <h3 style="border:none;padding-bottom:0;margin-bottom:8px">2. Classificação do nível de potencial e desempenho</h3>
+    <select id="classificacao" style="margin-bottom:20px">
+      <option>Abaixo do esperado</option>
+      <option selected>Dentro do esperado</option>
+      <option>Acima do esperado</option>
+      <option>Destaque (alto potencial)</option>
+    </select>
+
+    <h3 style="border:none;padding-bottom:0;margin-bottom:12px">3. Detalhes da situação</h3>
+    <div class="fg">
+      <div><label>Nome do colaborador *</label><input type="text" id="colaborador" placeholder="Ex: Sara Fernanda"></div>
+      <div><label>Nome do gestor *</label><input type="text" id="gestor" placeholder="Ex: Carlos Andrade"></div>
+      <div><label>Quando aconteceu?</label><input type="text" id="data" placeholder="Ex: na reunião do dia 20"></div>
+      <div><label>Contexto / demanda</label><input type="text" id="contexto" placeholder="Ex: atendimento ao cliente XPTO"></div>
+      <div class="full"><label>O que aconteceu? *</label><input type="text" id="comportamento" placeholder="Descreva o comportamento observado"></div>
+      <div class="full"><label>Qual foi o impacto? *</label><input type="text" id="impacto" placeholder="Descreva o resultado gerado"></div>
+    </div>
+
+    <div style="margin-top:16px">
+      <button type="button" class="btn-s" id="btn-gerar" onclick="gerarDevolutiva()">Gerar devolutiva</button>
+    </div>
+    <p class="erro" id="erro"></p>
+  </div>
+
+  <div class="card" id="resultado" style="display:none">
+    <div id="badges" style="margin-bottom:14px"></div>
+
+    <p class="out-label" style="color:#5a7a9b">CLASSIFICAÇÃO DO NÍVEL DE POTENCIAL E DESEMPENHO</p>
+    <p class="out-text" id="out-classificacao">—</p>
+
+    <p class="out-label" style="color:#185fa5">PLUS</p>
+    <p class="out-text" id="out-plus">—</p>
+
+    <p class="out-label" style="color:#ba7517">DELTA</p>
+    <p class="out-text" id="out-delta">—</p>
+
+    <p class="out-label" style="color:#5a7a9b">ACORDAMOS QUE</p>
+    <textarea id="acordos" rows="3" placeholder="Registre aqui os acordos definidos durante a conversa" style="margin-bottom:6px"></textarea>
+
+    <div>
+      <button type="button" class="btn-clr" onclick="copiarDevolutiva()">Copiar</button>
+      <button type="button" class="btn-clr" onclick="salvarDevolutiva()">Salvar no histórico</button>
+      <button type="button" class="btn-clr" onclick="window.print()">Exportar PDF</button>
+      <button type="button" class="btn-clr" onclick="compartilharDevolutiva()">Compartilhar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Histórico de devolutivas</h3>
+    <input type="text" id="busca" placeholder="Buscar por colaborador, gestor ou conteúdo" style="margin-bottom:12px" oninput="renderHistorico()">
+    <div id="hist-empty" class="empty">Nenhuma devolutiva salva ainda.</div>
+    <div id="hist-lista"></div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CONEXÃO COM O BACKEND (Google Apps Script)
+// ════════════════════════════════════════════════════════════
+// Cole aqui a URL do App da Web (termina em /exec), depois de
+// implantar o Code.gs deste projeto (veja apps-script-gerar-devolutiva.gs).
+var APPS_SCRIPT_URL = "COLE_AQUI_A_URL_DO_APPS_SCRIPT/exec";
+
+var PILARES = [
+  { id: "uniao", label: "União" },
+  { id: "solucao", label: "Solução" },
+  { id: "colaboracao", label: "Colaboração" },
+  { id: "interesse", label: "Interesse" },
+  { id: "evolucao", label: "Evolução" }
+];
+var pilarSelecionado = "colaboracao";
+var resultadoAtual = null;
+var historico = JSON.parse(localStorage.getItem("devolutiva_historico") || "[]");
+
+function renderPilares() {
+  var wrap = document.getElementById("pilares");
+  wrap.innerHTML = "";
+  PILARES.forEach(function (p) {
+    var el = document.createElement("div");
+    el.className = "pilar" + (p.id === pilarSelecionado ? " active" : "");
+    el.textContent = p.label;
+    el.onclick = function () { pilarSelecionado = p.id; renderPilares(); };
+    wrap.appendChild(el);
+  });
+}
+renderPilares();
+
+async function gerarDevolutiva() {
+  var colaborador = document.getElementById("colaborador").value.trim();
+  var gestor = document.getElementById("gestor").value.trim();
+  var comportamento = document.getElementById("comportamento").value.trim();
+  var impacto = document.getElementById("impacto").value.trim();
+  var erroEl = document.getElementById("erro");
+  erroEl.style.display = "none";
+
+  if (!colaborador || !gestor || !comportamento || !impacto) {
+    erroEl.textContent = "Preencha colaborador, gestor, comportamento e impacto.";
+    erroEl.style.display = "block";
+    return;
+  }
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("COLE_AQUI") > -1) {
+    erroEl.textContent = "Configure a URL do Apps Script na variável APPS_SCRIPT_URL antes de gerar.";
+    erroEl.style.display = "block";
+    return;
+  }
+
+  var btn = document.getElementById("btn-gerar");
+  btn.disabled = true;
+  btn.textContent = "Gerando...";
+
+  var pilarLabel = PILARES.find(function (p) { return p.id === pilarSelecionado; }).label;
+  var classificacao = document.getElementById("classificacao").value;
+  var dados = {
+    action: "gerarDevolutiva",
+    colaborador: colaborador,
+    gestor: gestor,
+    data: document.getElementById("data").value.trim(),
+    contexto: document.getElementById("contexto").value.trim(),
+    comportamento: comportamento,
+    impacto: impacto,
+    pilar: pilarLabel,
+    classificacao: classificacao
+  };
+
+  try {
+    var query = Object.keys(dados).map(function (k) {
+      return encodeURIComponent(k) + "=" + encodeURIComponent(dados[k]);
+    }).join("&");
+    var resp = await fetch(APPS_SCRIPT_URL + (APPS_SCRIPT_URL.indexOf("?") > -1 ? "&" : "?") + query);
+    var json = await resp.json();
+    if (!json.plus || !json.delta) throw new Error("formato inesperado");
+
+    resultadoAtual = { plus: json.plus, delta: json.delta, classificacao: classificacao, pilar: pilarLabel, colaborador: colaborador, gestor: gestor, data: dados.data };
+    document.getElementById("out-classificacao").textContent = classificacao;
+    document.getElementById("out-plus").textContent = json.plus;
+    document.getElementById("out-delta").textContent = json.delta;
+    document.getElementById("badges").innerHTML =
+      '<span class="badge badge-pilar">' + pilarLabel.toUpperCase() + '</span>' +
+      '<span class="badge badge-class">' + classificacao + '</span>';
+    document.getElementById("acordos").value = "";
+    document.getElementById("resultado").style.display = "block";
+  } catch (e) {
+    erroEl.textContent = "Não foi possível gerar a devolutiva agora. Verifique a URL do Apps Script e tente novamente.";
+    erroEl.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Gerar devolutiva";
+  }
+}
+
+function textoCompleto() {
+  var acordos = document.getElementById("acordos").value.trim() || "-";
+  return "Classificação do nível de potencial e desempenho: " + resultadoAtual.classificacao +
+    "\n\nPlus:\n" + resultadoAtual.plus +
+    "\n\nDelta:\n" + resultadoAtual.delta +
+    "\n\nAcordamos que:\n" + acordos;
+}
+
+function copiarDevolutiva() {
+  if (!resultadoAtual) return;
+  if (navigator.clipboard) navigator.clipboard.writeText(textoCompleto());
+}
+
+function salvarDevolutiva() {
+  if (!resultadoAtual) return;
+  var registro = Object.assign({}, resultadoAtual, {
+    id: Date.now(),
+    acordos: document.getElementById("acordos").value.trim()
+  });
+  historico.unshift(registro);
+  localStorage.setItem("devolutiva_historico", JSON.stringify(historico));
+  renderHistorico();
+}
+
+function compartilharDevolutiva() {
+  if (!resultadoAtual) return;
+  var texto = "Devolutiva de " + resultadoAtual.colaborador + "\n\n" + textoCompleto();
+  if (navigator.share) {
+    navigator.share({ title: "Devolutiva", text: texto });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(texto);
+  }
+}
+
+function renderHistorico() {
+  var busca = (document.getElementById("busca").value || "").toLowerCase();
+  var lista = historico.filter(function (h) {
+    if (!busca) return true;
+    return (h.colaborador + h.gestor + h.plus + h.delta).toLowerCase().indexOf(busca) > -1;
+  });
+  var wrap = document.getElementById("hist-lista");
+  var vazio = document.getElementById("hist-empty");
+  if (lista.length === 0) {
+    vazio.style.display = "block";
+    wrap.innerHTML = "";
+    return;
+  }
+  vazio.style.display = "none";
+  wrap.innerHTML = lista.map(function (h) {
+    return '<div class="hist-item">' +
+      '<p class="hist-nome">' + h.colaborador + '</p>' +
+      '<p class="hist-meta">Gestor: ' + h.gestor + (h.data ? " · " + h.data : "") + ' · ' + h.classificacao + '</p>' +
+      '<p style="font-size:12px;margin-bottom:4px"><b style="color:#185fa5">Plus:</b> ' + h.plus + '</p>' +
+      '<p style="font-size:12px;margin-bottom:4px"><b style="color:#ba7517">Delta:</b> ' + h.delta + '</p>' +
+      (h.acordos ? '<p style="font-size:12px"><b>Acordamos que:</b> ' + h.acordos + '</p>' : "") +
+      '</div>';
+  }).join("");
+}
+renderHistorico();
+</script>
+</body>
+</html>
